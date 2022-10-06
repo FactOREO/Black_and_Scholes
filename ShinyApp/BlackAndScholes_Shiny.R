@@ -4,66 +4,66 @@
 # - - - - - - - - - - - - - S h i n y   A p p - - - - - - - - - - - - - - - - #
 #=============================================================================#
 
-library(BlackScholes)
+library(BlackScholes); library(shiny)
 
-ui <- shiny::fluidPage(
+ui <- fluidPage(
   # T i t l e
-  shiny::titlePanel(
-    shiny::h1(shiny::strong("Black & Scholes Option Pricing and Delta Hedge"),
+  titlePanel(
+    h1(strong("Black & Scholes Option Pricing and Delta Hedge"),
               style = "font-size: 24px")
   ),
   # S i d e b a r
-  shiny::sidebarPanel(
+  sidebarPanel(
     width = 5,
-    shiny::fluidRow(
-      shiny::column(width = 6,
-                    shiny::selectInput("type","option", choices = c("Call","Put"),selected = "Put")),
-      shiny::column(width = 6,
-                    shiny::numericInput("stockprice","stock prive [purchase (€)]",100))
+    fluidRow(
+      column(width = 6,
+                    selectInput("type","option", choices = c("Call","Put"),selected = "Put")),
+      column(width = 6,
+                    numericInput("stockprice","stock prive [purchase (€)]",100))
     ),
-    shiny::fluidRow(
-      shiny::column(width = 6,
-                    shiny::numericInput("stockprice2","stock price [current (€)]",100)),
-      shiny::column(width = 6,numericInput("strikeprice","strike (€)",75))
+    fluidRow(
+      column(width = 6,
+                    numericInput("stockprice2","stock price [current (€)]",100)),
+      column(width = 6,numericInput("strikeprice","strike (€)",75))
     ),
-    shiny::fluidRow(
-      shiny::column(width = 4,shiny::numericInput("maturity",HTML("maturity<br/>(years)"),1,step = .05,min=0)),
-      shiny::column(width = 4,shiny::numericInput("current","current (years)",0.1,step = .05,min=0)),
-      shiny::column(width = 4,shiny::numericInput("purchase","purchase (years)",0,step = .05,min = 0))
+    fluidRow(
+      column(width = 4,numericInput("maturity",HTML("maturity<br/>(years)"),1,step = .05,min=0)),
+      column(width = 4,numericInput("current","current (years)",0.1,step = .05,min=0)),
+      column(width = 4,numericInput("purchase","purchase (years)",0,step = .05,min = 0))
     ),
-    shiny::fluidRow(
-      shiny::column(width = 6,shiny::numericInput("riskfree","riskfree rate of interest (%)",1)),
-      shiny::column(width = 6,shiny::numericInput("vola","implicit volatility (%)", 30, min = 0))),
-    shiny::fluidRow(
-      shiny::column(width = 6,shiny::numericInput("ratio","ratio",0.1)),
-      shiny::column(width = 6,shiny::numericInput("dividend","dividende yield (%)",2)))
+    fluidRow(
+      column(width = 6,numericInput("riskfree","riskfree rate of interest (%)",1)),
+      column(width = 6,numericInput("vola","implicit volatility (%)", 30, min = 0))),
+    fluidRow(
+      column(width = 6,numericInput("ratio","ratio",0.1)),
+      column(width = 6,numericInput("dividend","dividende yield (%)",2)))
   ),
   # M a i n p a n e l
-  shiny::mainPanel(
+  mainPanel(
     width = 7,
-    shiny::tabsetPanel(type = "tabs",
-                       shiny::tabPanel("option overview",shiny::tableOutput("overview")),
-                       shiny::tabPanel("option value in time",shiny::plotOutput("hockeystick")),
-                       shiny::tabPanel("value Delta hedge",shiny::plotOutput("deltahedge"),
-                                       shiny::fluidRow(
-                                         shiny::column(width = 6,shiny::textOutput("amount")),
-                                         shiny::column(width = 6,shiny::textOutput("price_1_option"))),
-                                       shiny::fluidRow(
-                                         shiny::column(width = 6,shiny::textOutput("price_options")),
-                                         shiny::column(width = 6,shiny::textOutput("initalPF"))),
-                                       shiny::fluidRow(
-                                         shiny::column(width = 6,shiny::textOutput("price_1_option_2")),
-                                         shiny::column(width = 6,shiny::textOutput("actualPF"))),
-                                       shiny::fluidRow(
-                                         shiny::column(width = 6,shiny::textOutput("profitPF")))),
-                       shiny::tabPanel("profit Delta-Hedge",shiny::plotOutput("deltahedge2"))
+    tabsetPanel(type = "tabs",
+                       tabPanel("option overview",tableOutput("overview")),
+                       tabPanel("option value in time",plotOutput("hockeystick")),
+                       tabPanel("value Delta hedge",plotOutput("deltahedge"),
+                                       fluidRow(
+                                         column(width = 6,textOutput("amount")),
+                                         column(width = 6,textOutput("price_1_option"))),
+                                       fluidRow(
+                                         column(width = 6,textOutput("price_options")),
+                                         column(width = 6,textOutput("initalPF"))),
+                                       fluidRow(
+                                         column(width = 6,textOutput("price_1_option_2")),
+                                         column(width = 6,textOutput("actualPF"))),
+                                       fluidRow(
+                                         column(width = 6,textOutput("profitPF")))),
+                       tabPanel("profit Delta-Hedge",plotOutput("deltahedge2"))
     )))
 
 server <- function(input, output, session) {
   #====================================================================#
   #             O v e r v i e w   a t   p u r c h a s e                #
   #====================================================================#
-  output$overview <- shiny::renderTable({
+  output$overview <- renderTable({
     BS_Option(
       Call = isTRUE(input$type),
       T = input$maturity,
@@ -79,7 +79,7 @@ server <- function(input, output, session) {
   #====================================================================#
   #             V al u e   of   t h e   o p t i o n   i n   t i m e    #
   #====================================================================#
-  output$hockeystick <- shiny::renderPlot({
+  output$hockeystick <- renderPlot({
     hockeystick_plot(
       Call = isTRUE(input$type),
       T = input$maturity,
@@ -92,7 +92,7 @@ server <- function(input, output, session) {
   #====================================================================#
   #             D e l t a   H e d g e   P l o t                        #
   #====================================================================#
-  output$deltahedge <- shiny::renderPlot({
+  output$deltahedge <- renderPlot({
     DeltaHedge(
       S = input$stockprice,
       maturity = input$maturity,
@@ -133,7 +133,7 @@ server <- function(input, output, session) {
   #====================================================================#
   #             D e l t a h e d g e  i n f o r m a t i o n s           #
   #====================================================================#
-  output$amount <- shiny::renderText({
+  output$amount <- renderText({
     paste("Number of Put options needed:",
           DeltaHedge(
             S = input$stockprice,
@@ -149,7 +149,7 @@ server <- function(input, output, session) {
     )
   })
 
-  output$price_1_option <- shiny::renderText({
+  output$price_1_option <- renderText({
     res <- DeltaHedge(
       S = input$stockprice,
       maturity = input$maturity,
@@ -167,7 +167,7 @@ server <- function(input, output, session) {
           round(price,4),"€")
   })
 
-  output$price_options <- shiny::renderText({
+  output$price_options <- renderText({
     paste("total costs [purchase]:",
           DeltaHedge(
             S = input$stockprice,
@@ -184,7 +184,7 @@ server <- function(input, output, session) {
           "€")
   })
 
-  output$initalPF <- shiny::renderText({
+  output$initalPF <- renderText({
     paste("portfolio value [purchase]:",
           input$stockprice +
             DeltaHedge(
@@ -202,7 +202,7 @@ server <- function(input, output, session) {
           "€")
   })
 
-  output$price_1_option_2 <- shiny::renderText({
+  output$price_1_option_2 <- renderText({
     paste("price of an option [current]:",
           BS_Option(
             Call = FALSE,
@@ -246,7 +246,7 @@ server <- function(input, output, session) {
           "€")
   })
 
-  output$profitPF <- shiny::renderText({
+  output$profitPF <- renderText({
     puts <- DeltaHedge(
       S = input$stockprice,
       maturity = input$maturity,
@@ -276,7 +276,7 @@ server <- function(input, output, session) {
   #====================================================================#
   #             p r o f i t  D e l t a h e d g e                       #
   #====================================================================#
-  output$deltahedge2 <- shiny::renderPlot({
+  output$deltahedge2 <- renderPlot({
     # profit at current time
     puts <- DeltaHedge(
       S = input$stockprice,
