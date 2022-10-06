@@ -4,6 +4,8 @@
 # - - - - - - - - - - - - - S h i n y   A p p - - - - - - - - - - - - - - - - #
 #=============================================================================#
 
+library(BlackScholes)
+
 ui <- shiny::fluidPage(
   # T i t l e
   shiny::titlePanel(
